@@ -155,26 +155,70 @@ function normName(n){return String(n).toLowerCase().replace(/[^a-z0-9]+/g,' ').t
 function findGuideCard(name){const key=normName(name);return [...document.querySelectorAll('.exercise-card')].find(c=>normName(c.querySelector('h3')?.textContent)===key)||[...document.querySelectorAll('.exercise-card')].find(c=>key.includes(normName(c.querySelector('h3')?.textContent||'___'))||normName(c.querySelector('h3')?.textContent||'___').includes(key))}
 function thumbSvg(name){
   const n=String(name||'').toLowerCase();
-  let label='MOVE', body='M48 24 L48 48 L48 70 M48 35 L30 44 M48 35 L66 44 M48 70 L34 88 M48 70 L62 88';
-  if(n.includes('push-up')||n.includes('push up')){label='PUSH-UP';body='M20 52 L42 52 L66 58 L83 60 M42 52 L34 66 M66 58 L72 72 M20 52 L13 60 M83 60 L91 55'}
-  else if(n.includes('dip')){label='DIP';body='M48 28 L48 49 L48 69 M48 39 L30 48 L23 48 M48 39 L66 48 L73 48 M48 69 L35 86 M48 69 L62 86'}
-  else if(n.includes('chest press')){label='CHEST PRESS';body='M48 28 L48 53 L48 70 M48 40 L25 40 L18 32 M48 40 L71 40 L78 32 M48 70 L35 88 M48 70 L62 88'}
-  else if(n.includes('lateral raise')){label='LATERAL RAISE';body='M48 28 L48 55 L48 72 M48 41 L21 35 M48 41 L75 35 M48 72 L35 88 M48 72 L62 88'}
-  else if(n.includes('triceps')){label='TRICEPS EXT.';body='M48 28 L48 55 L48 72 M48 38 L35 25 L35 12 M48 38 L61 25 L61 12 M48 72 L35 88 M48 72 L62 88'}
-  else if(n.includes('row')){label='BAND ROW';body='M48 28 L48 55 L48 72 M48 40 L27 48 M48 40 L69 48 M48 72 L35 88 M48 72 L62 88'}
-  else if(n.includes('pull-up')||n.includes('pull up')||n.includes('muscle-up')||n.includes('muscle up')){label='PULL-UP';body='M48 32 L48 55 L48 70 M48 40 L31 23 L31 12 M48 40 L65 23 L65 12 M48 70 L35 88 M48 70 L62 88'}
-  else if(n.includes('squat')){label='SQUAT';body='M48 27 L48 50 L48 64 M48 38 L30 46 M48 38 L66 46 M48 64 L31 69 L24 86 M48 64 L65 69 L72 86'}
-  else if(n.includes('deadlift')){label='HIP HINGE';body='M42 32 L55 49 L57 69 M48 39 L30 52 M48 39 L67 52 M57 69 L38 86 M57 69 L73 86'}
-  else if(n.includes('lunge')){label='LUNGE';body='M48 26 L48 49 L48 62 M48 38 L30 47 M48 38 L66 47 M48 62 L31 69 L25 86 M48 62 L66 62 L80 82'}
-  else if(n.includes('curl')){label='BICEPS CURL';body='M48 28 L48 55 L48 72 M48 40 L29 51 L34 35 M48 40 L67 51 L62 35 M48 72 L35 88 M48 72 L62 88'}
-  else if(n.includes('plank')){label='PLANK';body='M17 56 L38 56 L60 61 L83 61 M38 56 L34 70 M60 61 L65 74 M17 56 L12 62 M83 61 L91 56'}
-  else if(n.includes('dead bug')||n.includes('sit-up')||n.includes('sit up')){label=n.includes('dead bug')?'DEAD BUG':'CORE';body='M20 67 L44 67 L65 67 M44 67 L38 50 L27 42 M44 67 L51 51 L63 44 M65 67 L76 54 L86 54'}
-  else if(n.includes('run')||n.includes('jog')||n.includes('walk')){label='RUN / WALK';body='M48 28 L43 49 L60 59 M43 49 L26 59 M43 49 L31 72 M60 59 L77 72 M31 72 L22 88 M77 72 L88 84'}
-  else if(n.includes('cool-down')||n.includes('cool down')||n.includes('warm-up')||n.includes('warm up')||n.includes('mobility')||n.includes('stretch')){label='MOBILITY';body='M48 28 L48 56 L48 72 M48 40 L26 30 M48 40 L70 30 M48 72 L35 88 M48 72 L62 88'}
-  const isBand=n.includes('band')||n.includes('row')||n.includes('press')||n.includes('triceps')||n.includes('lateral');
-  return '<svg class="exercise-photo" viewBox="0 0 100 104" role="img" aria-label="'+esc(name)+' movement illustration"><rect x="1" y="1" width="98" height="102" rx="10" fill="#192624" stroke="#354a43"/><path d="'+body+'" stroke="#c7f36b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="48" cy="17" r="7" fill="#c7f36b"/><path d="M9 92 H91" stroke="#8ab9ff" stroke-width="2" stroke-linecap="round"'+(isBand?' stroke-dasharray="3 3"':'')+'/><text x="50" y="100" text-anchor="middle" font-size="5" fill="#d7e3dc">'+label+'</text></svg>';
+  const line='stroke="#c7f36b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"';
+  const head=(x,y)=>'<circle cx="'+x+'" cy="'+y+'" r="7" fill="#c7f36b"/>';
+  let label='CONTROLLED MOVEMENT', start='', finish='', equipment='';
+  if(n.includes('muscle-up')||n.includes('muscle up')){
+    label='MUSCLE-UP'; equipment='<path d="M18 28H142 M178 28H302" stroke="#8ab9ff" stroke-width="5" stroke-linecap="round"/>';
+    start=head(80,48)+'<path d="M80 58L80 91 M80 67L58 42L58 30 M80 67L102 42L102 30 M80 91L67 119L63 140 M80 91L93 119L97 140" '+line+'/>';
+    finish=head(240,48)+'<path d="M240 58L240 87 M240 66L218 42L218 30 M240 66L262 42L262 30 M240 87L224 108L220 140 M240 87L256 108L260 140" '+line+'/>';
+  } else if(n.includes('pull-up')||n.includes('pull up')||n.includes('chin-up')||n.includes('chin up')){
+    label='PULL-UP'; equipment='<path d="M18 28H142 M178 28H302" stroke="#8ab9ff" stroke-width="5" stroke-linecap="round"/>';
+    start=head(80,49)+'<path d="M80 59L80 91 M80 66L58 42L58 30 M80 66L102 42L102 30 M80 91L67 119L63 140 M80 91L93 119L97 140" '+line+'/>';
+    finish=head(240,57)+'<path d="M240 67L240 94 M240 72L218 42L218 30 M240 72L262 42L262 30 M240 94L226 120L223 140 M240 94L254 120L257 140" '+line+'/>';
+  } else if(n.includes('push-up')||n.includes('push up')){
+    label='PUSH-UP';
+    start=head(43,74)+'<path d="M51 78L92 82L124 88 M75 81L65 101 M111 87L119 103 M124 88L137 85 M32 77L20 85" '+line+'/>';
+    finish=head(203,71)+'<path d="M211 75L249 79L280 85 M235 78L226 97 M268 82L277 100 M280 85L295 82 M192 74L180 82" '+line+'/>';
+  } else if(n.includes('dip')){
+    label='DIP'; equipment='<path d="M18 115H142 M178 115H302" stroke="#8ab9ff" stroke-width="4" stroke-linecap="round"/>';
+    start=head(80,48)+'<path d="M80 58L80 88 M80 66L56 80L56 115 M80 66L104 80L104 115 M80 88L67 115 M80 88L93 115" '+line+'/>';
+    finish=head(240,56)+'<path d="M240 66L240 94 M240 73L218 88L218 115 M240 73L262 88L262 115 M240 94L227 115 M240 94L253 115" '+line+'/>';
+  } else if(n.includes('chest press')){
+    label='BAND CHEST PRESS';
+    start=head(55,43)+'<path d="M55 53L55 100 M55 67L32 76L28 60 M55 67L78 76L82 60 M55 100L43 131 M55 100L67 131" '+line+'/>';
+    finish=head(215,43)+'<path d="M215 53L215 100 M215 67L190 64L178 64 M215 67L240 64L252 64 M215 100L203 131 M215 100L227 131" '+line+'/>';
+    equipment='<path d="M18 141H142 M178 141H302" stroke="#8ab9ff" stroke-width="3" stroke-dasharray="5 4"/>';
+  } else if(n.includes('lateral raise')){
+    label='LATERAL RAISE';
+    start=head(80,43)+'<path d="M80 53L80 101 M80 66L61 84L59 102 M80 66L99 84L101 102 M80 101L68 131 M80 101L92 131" '+line+'/>';
+    finish=head(240,43)+'<path d="M240 53L240 101 M240 66L205 66 M240 66L275 66 M240 101L228 131 M240 101L252 131" '+line+'/>';
+  } else if(n.includes('triceps')){
+    label='TRICEPS EXTENSION';
+    start=head(80,43)+'<path d="M80 53L80 101 M80 65L65 48L65 34 M80 65L95 48L95 34 M80 101L68 131 M80 101L92 131" '+line+'/>';
+    finish=head(240,43)+'<path d="M240 53L240 101 M240 65L222 36 M240 65L258 36 M240 101L228 131 M240 101L252 131" '+line+'/>';
+  } else if(n.includes('row')){
+    label='BAND ROW'; equipment='<path d="M18 139H142 M178 139H302" stroke="#8ab9ff" stroke-width="3" stroke-dasharray="5 4"/>';
+    start=head(70,39)+'<path d="M70 49L70 98 M70 64L94 78L111 78 M70 64L95 90L111 90 M70 98L58 129 M70 98L82 129" '+line+'/>';
+    finish=head(230,39)+'<path d="M230 49L230 98 M230 64L207 72L195 72 M230 64L207 84L195 84 M230 98L218 129 M230 98L242 129" '+line+'/>';
+  } else if(n.includes('dead bug')){
+    label='DEAD BUG';
+    start='<path d="M22 108L58 108L87 108 M58 108L47 78L34 67 M58 108L73 80L87 70 M87 108L101 86L113 86" '+line+'/>';
+    finish='<path d="M182 108L218 108L247 108 M218 108L204 80L193 67 M218 108L238 80L249 70 M247 108L272 126L288 126" '+line+'/>';
+  } else if(n.includes('sit-up')||n.includes('sit up')){
+    label='SIT-UP';
+    start='<path d="M18 112L51 112L83 112 M51 112L44 91 M51 112L62 91 M83 112L99 112" '+line+'/>';
+    finish='<path d="M178 112L212 112L246 112 M212 112L210 84L230 68 M212 112L225 88 M246 112L270 112" '+line+'/>';
+  } else if(n.includes('squat')){
+    label='SQUAT';
+    start=head(80,42)+'<path d="M80 52L80 82 M80 62L60 74 M80 62L100 74 M80 82L68 102L66 131 M80 82L92 102L94 131" '+line+'/>';
+    finish=head(240,49)+'<path d="M240 59L240 83 M240 66L220 76 M240 66L260 76 M240 83L220 98L211 122 M240 83L260 98L269 122" '+line+'/>';
+  } else if(n.includes('curl')){
+    label='BICEPS CURL';
+    start=head(80,42)+'<path d="M80 52L80 101 M80 64L60 80L64 97 M80 64L100 80L96 97 M80 101L68 131 M80 101L92 131" '+line+'/>';
+    finish=head(240,42)+'<path d="M240 52L240 101 M240 64L220 80L224 63 M240 64L260 80L256 63 M240 101L228 131 M240 101L252 131" '+line+'/>';
+  } else if(n.includes('run')||n.includes('jog')||n.includes('walk')){
+    label='RUN / WALK';
+    start=head(80,42)+'<path d="M80 52L80 81L98 96 M80 63L60 78 M80 81L65 105L57 130 M98 96L113 112L123 130" '+line+'/>';
+    finish=head(240,42)+'<path d="M240 52L228 80L250 96 M233 65L211 73 M228 80L211 105L204 130 M250 96L271 104L283 124" '+line+'/>';
+  } else {
+    label='CONTROLLED MOVEMENT';
+    start=head(80,42)+'<path d="M80 52L80 101 M80 64L59 75 M80 64L101 75 M80 101L68 131 M80 101L92 131" '+line+'/>';
+    finish=head(240,42)+'<path d="M240 52L240 101 M240 64L211 59 M240 64L269 59 M240 101L228 131 M240 101L252 131" '+line+'/>';
+  }
+  return '<svg class="exercise-photo" viewBox="0 0 320 164" role="img" aria-label="'+esc(name)+' start and movement illustration"><rect x="1" y="1" width="318" height="162" rx="14" fill="#101a19" stroke="#354a43"/><rect x="8" y="8" width="136" height="138" rx="9" fill="#192624"/><rect x="176" y="8" width="136" height="138" rx="9" fill="#192624"/>'+equipment+'<g>'+start+'</g><path d="M148 76H170 M163 68L171 76L163 84" stroke="#8ab9ff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><g>'+finish+'</g><text x="76" y="157" text-anchor="middle" font-size="10" fill="#d7e3dc">START</text><text x="244" y="157" text-anchor="middle" font-size="10" fill="#d7e3dc">MOVE</text><title>'+esc(name)+' — start and movement</title></svg>';
 }
-function openGuide(name){const card=findGuideCard(name);const matched=Object.keys(guideTips).find(k=>normName(k)===normName(name))||Object.keys(guideTips).find(k=>normName(name).includes(normName(k))||normName(k).includes(normName(name)));const tips=matched?guideTips[matched]:['Set up in a stable, comfortable position and use controlled movement.','Keep the effort manageable and breathe continuously; avoid holding your breath.','Stop before technique breaks and stop immediately for sharp pain, dizziness or unusual symptoms.'];$('guideTitle').textContent=name+' · How to';$('guideBody').innerHTML=(thumbSvg(name).replace('class="exercise-photo"','class="guide-visual photo"'))+(card?card.querySelector('.notice')?.outerHTML||'':'')+'<ol class="steps">'+tips.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ol><p class="cue">Training cue: controlled reps, pain-free range, and 2–3 reps in reserve for most strength sets.</p>';$('guideOverlay').classList.remove('hidden');document.body.style.overflow='hidden'}
+function openGuide(name){const card=findGuideCard(name);const matched=Object.keys(guideTips).find(k=>normName(k)===normName(name))||Object.keys(guideTips).find(k=>normName(name).includes(normName(k))||normName(k).includes(normName(name)));const tips=matched?guideTips[matched]:['Set up in a stable, comfortable position and use controlled movement.','Keep the effort manageable and breathe continuously; avoid holding your breath.','Stop before technique breaks and stop immediately for sharp pain, dizziness or unusual symptoms.'];$('guideTitle').textContent=name+' · How to';$('guideBody').innerHTML='<p class="muted">Illustration: start position → movement position. Follow the numbered steps below; the drawing is a simplified guide.</p>'+(thumbSvg(name).replace('class="exercise-photo"','class="guide-visual photo"'))+(card?card.querySelector('.notice')?.outerHTML||'':'')+'<h3>Step-by-step</h3><ol class="steps">'+tips.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ol><p class="cue">Breathing: keep breathing continuously. Training cue: controlled reps, pain-free range, and 2–3 reps in reserve for most strength sets.</p>';$('guideOverlay').classList.remove('hidden');document.body.style.overflow='hidden'}
 function closeGuide(){$('guideOverlay').classList.add('hidden');document.body.style.overflow=''}
 $('closeGuide').addEventListener('click',closeGuide);$('guideOverlay').addEventListener('click',e=>{if(e.target===$('guideOverlay'))closeGuide()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeGuide()});
 // Workout interval timer (works while the app page is active; iOS may pause background timers).
