@@ -71,7 +71,7 @@
       <div class="card"><h2>Recent check-ins</h2><div id="recoveryHistory" class="muted">No check-ins yet.</div></div>
     </section>
     <section class="section" id="exercises">
-      <div class="card"><h2>Exercise how-to library</h2><p class="muted">Use the exercise photos and movement cues as a quick reference. Start light, move slowly, and stop if you feel pain. For band exercises, inspect bands and anchors before each set.</p>
+      <div class="card"><h2>Exercise how-to library</h2><p class="muted">Use these movement sketches and cues as a quick reference. Start light, move slowly, and stop if you feel pain. For band exercises, inspect bands and anchors before each set.</p>
         <div class="exercise-grid">
           <article class="exercise-card"><h3>Band row</h3><svg class="move" viewBox="0 0 300 125" role="img" aria-label="Band row start and finish positions"><path class="band" d="M20 75 L100 75 M20 75 L145 75"/><circle class="person" cx="120" cy="30" r="10"/><path class="person" d="M120 41 L120 76 L100 93 M120 76 L140 93 M120 50 L91 61 L66 61 M120 50 L150 58 L171 58"/><path class="arrow" d="M180 58 L207 58 M201 52 L207 58 L201 64"/><circle class="person" cx="245" cy="30" r="10"/><path class="person" d="M245 41 L245 76 L225 93 M245 76 L265 93 M245 50 L228 59 L210 59 M245 50 L228 59 L210 59"/><text x="80" y="115">Start</text><text x="225" y="115">Pull</text></svg><ol class="steps"><li>Anchor band securely at chest height and step back until taut.</li><li>Keep torso tall; pull elbows toward your ribs.</li><li>Pause briefly, then return slowly without rounding your back.</li></ol><div class="cue">Cue: elbows back; shoulders down.</div></article>
           <article class="exercise-card"><h3>Band biceps curl</h3><svg class="move" viewBox="0 0 300 125" role="img" aria-label="Biceps curl start and finish positions"><path class="band" d="M88 96 L110 58 M88 96 L150 58"/><circle class="person" cx="120" cy="25" r="10"/><path class="person" d="M120 36 L120 78 L103 98 M120 78 L138 98 M120 45 L101 66 L110 88 M120 45 L139 66 L150 88"/><path class="arrow" d="M180 75 L205 50 M197 51 L205 50 L205 58"/><circle class="person" cx="245" cy="25" r="10"/><path class="person" d="M245 36 L245 78 L228 98 M245 78 L263 98 M245 45 L226 65 L228 46 M245 45 L264 65 L262 46"/><text x="80" y="115">Lower</text><text x="224" y="115">Curl</text></svg><ol class="steps"><li>Stand on the band with feet hip-width apart.</li><li>Keep elbows close to your sides and curl hands toward shoulders.</li><li>Lower under control; avoid swinging your body.</li></ol><div class="cue">Cue: elbows stay still; wrists neutral.</div></article>
@@ -147,19 +147,25 @@ function normName(n){return String(n).toLowerCase().replace(/[^a-z0-9]+/g,' ').t
 function findGuideCard(name){const key=normName(name);return [...document.querySelectorAll('.exercise-card')].find(c=>normName(c.querySelector('h3')?.textContent)===key)||[...document.querySelectorAll('.exercise-card')].find(c=>key.includes(normName(c.querySelector('h3')?.textContent||'___'))||normName(c.querySelector('h3')?.textContent||'___').includes(key))}
 function thumbSvg(name){
   const n=String(name||'').toLowerCase();
+  const image=(id)=>'https://images.unsplash.com/'+id+'?auto=format&fit=crop&w=480&q=82';
   const photos=[
-    {keys:['push-up','push up','chest press','dips'],url:'https://images.pexels.com/photos/176782/pexels-photo-176782.jpeg?auto=compress&cs=tinysrgb&w=480'},
-    {keys:['pull-up','pull up','muscle-up','muscle up','band row','face pull','pulldown'],url:'https://images.pexels.com/photos/4162487/pexels-photo-4162487.jpeg?auto=compress&cs=tinysrgb&w=480'},
-    {keys:['squat','lunge','calf raise','deadlift'],url:'https://images.pexels.com/photos/2261485/pexels-photo-2261485.jpeg?auto=compress&cs=tinysrgb&w=480'},
-    {keys:['curl','triceps','lateral raise'],url:'https://images.pexels.com/photos/3837757/pexels-photo-3837757.jpeg?auto=compress&cs=tinysrgb&w=480'},
-    {keys:['dead bug','sit-up','sit up','plank','core'],url:'https://images.pexels.com/photos/4056723/pexels-photo-4056723.jpeg?auto=compress&cs=tinysrgb&w=480'},
-    {keys:['warm-up','warm up','mobility','cool-down','cool down','stretch'],url:'https://images.pexels.com/photos/6456300/pexels-photo-6456300.jpeg?auto=compress&cs=tinysrgb&w=480'},
-    {keys:['run','walk','jog'],url:'https://images.pexels.com/photos/2803158/pexels-photo-2803158.jpeg?auto=compress&cs=tinysrgb&w=480'}
+    {keys:['band chest press','chest press'],src:'photo-1583454110551-21f2fa2afe61'},
+    {keys:['push-up','push up'],src:'photo-1598971639058-fab3c3109a00'},
+    {keys:['dip'],src:'photo-1534368270820-9de3d8053204'},
+    {keys:['band row','resistance row','seated row','row'],src:'photo-1581009146145-b5ef050c2e1e'},
+    {keys:['lateral raise','shoulder raise'],src:'photo-1583454110551-21f2fa2afe61'},
+    {keys:['triceps extension','tricep extension','triceps'],src:'photo-1534438327276-14e5300c3a48'},
+    {keys:['muscle-up','muscle up','pull-up','pull up','chin-up','chin up'],src:'photo-1598971639058-fab3c3109a00'},
+    {keys:['warm-up','warm up','mobility','stretch'],src:'photo-1518611012118-696072aa579a'},
+    {keys:['cool-down','cool down'],src:'photo-1518611012118-696072aa579a'},
+    {keys:['dead bug','sit-up','sit up','plank','core'],src:'photo-1571019613454-1cb2f99b2d8b'},
+    {keys:['squat','lunge','calf raise','deadlift'],src:'photo-1581009146145-b5ef050c2e1e'},
+    {keys:['run','walk','jog'],src:'photo-1538805060514-97d9cc17730c'}
   ];
   const match=photos.find(p=>p.keys.some(k=>n.includes(k)));
-  const url=match?match.url:'https://images.pexels.com/photos/4162487/pexels-photo-4162487.jpeg?auto=compress&cs=tinysrgb&w=480';
-  const fallback='https://images.pexels.com/photos/4162487/pexels-photo-4162487.jpeg?auto=compress&cs=tinysrgb&w=480';
-  return '<img class="exercise-photo" src="'+url+'" alt="'+esc(name)+' exercise photo" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src=\''+fallback+'\'">';
+  const src=image(match?match.src:'photo-1581009146145-b5ef050c2e1e');
+  const fallback=image('photo-1571019613454-1cb2f99b2d8b');
+  return '<img class="exercise-photo" src="'+src+'" alt="'+esc(name)+' exercise photo" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src=\''+fallback+'\'">';
 }
 function openGuide(name){const card=findGuideCard(name);const matched=Object.keys(guideTips).find(k=>normName(k)===normName(name))||Object.keys(guideTips).find(k=>normName(name).includes(normName(k))||normName(k).includes(normName(name)));const tips=matched?guideTips[matched]:['Set up in a stable, comfortable position and use controlled movement.','Keep the effort manageable and breathe continuously; avoid holding your breath.','Stop before technique breaks and stop immediately for sharp pain, dizziness or unusual symptoms.'];$('guideTitle').textContent=name+' · How to';$('guideBody').innerHTML=(thumbSvg(name).replace('class="exercise-photo"','class="guide-visual photo"'))+(card?card.querySelector('.notice')?.outerHTML||'':'')+'<ol class="steps">'+tips.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ol><p class="cue">Training cue: controlled reps, pain-free range, and 2–3 reps in reserve for most strength sets.</p>';$('guideOverlay').classList.remove('hidden');document.body.style.overflow='hidden'}
 function closeGuide(){$('guideOverlay').classList.add('hidden');document.body.style.overflow=''}
