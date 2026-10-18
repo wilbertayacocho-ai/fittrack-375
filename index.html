@@ -156,16 +156,21 @@ function findGuideCard(name){const key=normName(name);return [...document.queryS
 function thumbSvg(name){
   const n=String(name||'').toLowerCase();
   let file='mobility.jpg';
-  if(n.includes('push-up')||n.includes('push up')) file='push-ups.jpg';
+  if(n.includes('run')||n.includes('jog')) file='run.jpg';
+  else if(n.includes('push-up')||n.includes('push up')) file='push-ups.jpg';
+  else if(n.includes('dip')) file='dips.jpg';
+  else if(n.includes('chest press')) file='band-chest-press.jpg';
+  else if(n.includes('lateral raise')) file='band-lateral-raise.jpg';
+  else if(n.includes('triceps')) file='band-triceps-extension.jpg';
+  else if(n.includes('warm-up')||n.includes('warm up')) file='warm-up.jpg';
+  else if(n.includes('cool-down')||n.includes('cool down')) file='cool-down.jpg';
   else if(n.includes('muscle-up')||n.includes('muscle up')) file='muscle-up.jpg';
   else if(n.includes('pull-up')||n.includes('pull up')||n.includes('chin-up')||n.includes('chin up')) file='pull-up.jpg';
   else if(n.includes('row')) file='band-row.jpg';
   else if(n.includes('dead bug')||n.includes('sit-up')||n.includes('sit up')||n.includes('core')) file='dead-bug.jpg';
-  else if(n.includes('warm-up')||n.includes('warm up')||n.includes('mobility')||n.includes('stretch')||n.includes('cool-down')||n.includes('cool down')) file='mobility.jpg';
-  else if(n.includes('dip')) file='muscle-up.jpg';
-  else if(n.includes('chest press')||n.includes('triceps')||n.includes('lateral raise')||n.includes('curl')) file='band-row.jpg';
+  else if(n.includes('mobility')||n.includes('stretch')) file='mobility.jpg';
+  else if(n.includes('walk')) file='mobility.jpg';
   else if(n.includes('squat')||n.includes('lunge')||n.includes('deadlift')) file='mobility.jpg';
-  else if(n.includes('run')||n.includes('jog')||n.includes('walk')) file='mobility.jpg';
   return '<img class="exercise-photo" src="assets/exercises/'+file+'" alt="'+esc(name)+' exercise illustration" loading="lazy" decoding="async">';
 }
 function openGuide(name){const card=findGuideCard(name);const matched=Object.keys(guideTips).find(k=>normName(k)===normName(name))||Object.keys(guideTips).find(k=>normName(name).includes(normName(k))||normName(k).includes(normName(name)));const tips=matched?guideTips[matched]:['Set up in a stable, comfortable position and use controlled movement.','Keep the effort manageable and breathe continuously; avoid holding your breath.','Stop before technique breaks and stop immediately for sharp pain, dizziness or unusual symptoms.'];$('guideTitle').textContent=name+' · How to';$('guideBody').innerHTML='<p class="muted">Exercise visual: use the photo reference together with the numbered steps below. Where a visual is illustrative, follow the written technique cues first.</p>'+(thumbSvg(name).replace('class="exercise-photo"','class="guide-visual photo"'))+(card?card.querySelector('.notice')?.outerHTML||'':'')+'<h3>Step-by-step</h3><ol class="steps">'+tips.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ol><p class="cue">Breathing: keep breathing continuously. Training cue: controlled reps, pain-free range, and 2–3 reps in reserve for most strength sets.</p>';$('guideOverlay').classList.remove('hidden');document.body.style.overflow='hidden'}
